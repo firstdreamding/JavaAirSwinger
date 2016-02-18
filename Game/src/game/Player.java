@@ -365,6 +365,11 @@ public class Player extends Entity{
 		return result;
 	}
 
+	public void damage() {
+		// TODO Auto-generated method stub
+		
+	}
+
 
 
 

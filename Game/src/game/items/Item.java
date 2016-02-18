@@ -2,6 +2,7 @@ package game.items;
 
 import game.Entity;
 import game.Level;
+import game.Player;
 import graphics.Texture;
 
 import java.util.HashMap;

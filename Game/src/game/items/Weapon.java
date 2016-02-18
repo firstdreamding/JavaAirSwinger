@@ -4,6 +4,7 @@ public class Weapon extends Item {
 	
 	protected int damage;
 	protected int range;
+
 	
 	public Weapon(int id, String name, String description){
 		super(id, name, description);
