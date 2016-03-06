@@ -11,8 +11,11 @@ public class Dragon extends Entity {
 	private static SpriteSheet dragonTextures = new SpriteSheet(new Texture("res/Dragon.png"),50, 50);
 	private int tx, ty;
 	private int damage = 0;
-	public boolean doneDamage;
-	int modX, modY;
+	float modX, modY;
+	int damageTimer;
+	float opacity = 1;
+	float red = 0.9f;
+	float colors;
 	
 	public Dragon(int x, int y){
 		this.x = x;
@@ -21,10 +24,6 @@ public class Dragon extends Entity {
 		health = 10;
 	}
 	
-	public void doneDamage(boolean yes) {
-		doneDamage = yes;
-	}
-
 	public void update(){
 		int xa = random.nextInt(3) - 1;
 		int ya = random.nextInt(3) - 1;
@@ -59,16 +58,39 @@ public class Dragon extends Entity {
 	}
 	
 	public void renderDamage (Screen screen) {
-		if(doneDamage){
-			screen.drawString("-" + damage, x * Tile.SIZE + modX, y * Tile.SIZE + modY, new Font("Consolas", Font.BOLD, 18), Color.RED);
-		}
+		if (opacity < 0.0f)
+			opacity = 0.0f;
 		
+		if (opacity > 1.0f)
+			opacity = 1.0f;
+		
+		if(showDamage()){
+			screen.drawString("-" + damage, (int)(x * Tile.SIZE + modX), (int)(y * Tile.SIZE + modY), new Font("Consolas", Font.BOLD, 18), new Color(red, colors, colors, opacity));
+			
+			
+			modY -= 0.1f;
+			opacity -= 0.75f / 360f;
+			colors += 0.3f / 360f;
+			modX += random.nextInt(3) - 1;
+		}
+		damageTimer--;
+		
+	}
+	
+	public boolean showDamage() {
+		return damageTimer > 0;
 	}
 	
 	public void damage(int amount) {
 		health -= amount;
+		modX = 15;
 		damage = amount;
-		doneDamage = true;
+		opacity = 1.0f;
+		red = 0.9f;
+		damageTimer = 360;
+		modY = 0;
+		colors = 0.1f;
+		
 		if (health <= 0)
 			remove();
 		

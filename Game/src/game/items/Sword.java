@@ -23,15 +23,17 @@ public class Sword extends Weapon {
 		
         if (!(entity instanceof Player)) return;
         Player player = (Player) entity;
-        
+       
         List<Dragon> dragons = level.findEntities(Dragon.class, 2, player);
         
         
         
         for (Dragon dragon : dragons) {
         	dragon.damage(2);
-        }
+        
+        
         
         //System.out.println("You did a rapid spin with your sword at " + entities.get(0));
         }
+	}
 }

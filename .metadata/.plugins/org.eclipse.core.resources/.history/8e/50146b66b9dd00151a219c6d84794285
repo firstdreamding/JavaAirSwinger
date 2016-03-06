@@ -1,0 +1,41 @@
+package game.items;
+
+import game.Dragon;
+import game.Entity;
+import game.Level;
+import game.Player;
+import game.TextureManager;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
+public class Sword extends Weapon {
+
+	public Sword(int id){
+		super(id,"Sword","A rusty old sword.");
+		weight = 8 + random.nextInt(5);
+		damage = 60 + random.nextInt(10);
+		range = 1;
+		icon = TextureManager.get("SwordIcon");
+	}
+	public void use(Entity entity, Level level) {
+		
+        if (!(entity instanceof Player)) return;
+        Player player = (Player) entity;
+      /*  
+        List<Dragon> dragons = level.findEntities(Dragon.class, 2, player);
+        
+        
+        
+        for (Dragon dragon : dragons) {
+        	dragon.damage(2);
+        
+        */
+        
+        List<Dragon> dragons = level.findEntities(Dragon.class, 2, player);
+        dragons.get(1).damage(random.nextInt(5) + 2);
+        
+        //System.out.println("You did a rapid spin with your sword at " + entities.get(0));
+        }
+}

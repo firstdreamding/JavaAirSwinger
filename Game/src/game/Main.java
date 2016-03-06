@@ -153,7 +153,7 @@ public class Main{
 				case "info":
 					level.infoOn();
 					break;
-				case "Damage":
+				case "damage":
 					player.damage();
 					break;
 			}
