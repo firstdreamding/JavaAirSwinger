@@ -5,6 +5,8 @@ import graphics.Screen;
 import graphics.SpriteSheet;
 import graphics.Texture;
 
+import java.awt.Color;
+import java.awt.Font;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -20,10 +22,10 @@ public class Player extends Entity{
 
 	Input input;
 	String name;
-	public Item[] items = new Item[MAX_ITEMS];
+	public PlayerItem[] items = new PlayerItem[MAX_ITEMS];
 	int selected = 0;
-	int[] qts = new int[5];
 	int index = 0;
+	private Font itemQtyFont = new Font("Helvetica", Font.PLAIN, 18);
 	char didyouslam;
 	
 	private SpriteSheet playerTextures;
@@ -32,6 +34,22 @@ public class Player extends Entity{
 	private Map<String, String> commandHistory = new HashMap<String, String>();
 	
 	private Texture[] heartTextures = new Texture[3];
+	
+	
+	public class PlayerItem {
+		public Item item;
+		public int quantity;
+		
+		PlayerItem() {
+			
+		}
+		
+		PlayerItem(Item item, int qty){
+			this.item = item;
+			this.quantity = qty;
+		}
+		
+	}
 
 	public Player(Input input){
 		this.input = input;
@@ -54,40 +72,69 @@ public class Player extends Entity{
 		heartTextures[2] = TextureManager.get("HeartFullIcon");
 		
 		health = 10;
-		addItem(Item.sword);
-		addItem(Item.bow);
-		addItem(Item.arrow);
+		addItem(Item.sword, 0);
+		addItem(Item.bow, 1);
+		addItem(Item.arrow, 2);
+		addItem(Item.arrow, 2);
+		addItem(Item.arrow, 2);
+		addItem(Item.arrow, 2);
+		addItem(Item.arrow, 2);
+		addItem(Item.arrow, 2);
+		addItem(Item.arrow, 2);
+		addItem(Item.arrow, 2);
+		addItem(Item.arrow, 2);
+		addItem(Item.arrow, 2);
+		addItem(Item.arrow, 2);
+		addItem(Item.arrow, 2);
+		
 	}
 
 	public void addItem(Item item) {
-		if (qts[item.id] == 0){
-			items[index % MAX_ITEMS] = item;
-			index++;
-		}
-		qts[item.id]++;
-
-	}
-
-	public void removeItem(Item item, int qty) {
-		boolean found = false;
-		int i;
-		for (i = 0; i < MAX_ITEMS; i++){
-			if (items[i].equals(item)){
-				found = true;
-				break;
-			}
-		}
-		if(!found)
-		   return;
 		
-		if (--qts[item.id] == 0){
-			items[i] = null;
+		for(int i = 0; i < MAX_ITEMS; i++){
+			if(items[i] == null){
+				addItem(item, i);
+				return;
+			}
 		}
 		
 	}
 	
+	public void addItem(Item item, int slot) {
+		if (item == null) {
+			items[slot] = null;
+			return;
+		}
+		
+		if (items[slot] == null || items[slot].item != item) {
+			items[slot] = new PlayerItem();
+		}
+		items[slot].item = item;
+		items[slot].quantity++;
+	}
+	
+	public void removeItem(Item item, int qty) {
+		for(int i = 0; i < MAX_ITEMS; i++){
+			if (items[i] == null)
+				continue;
+			
+			if (items[i].item == Item.arrow) {
+				int xtra = items[i].quantity - qty;
+				if(xtra < 0){
+					qty = -xtra;
+					items[i] = null;
+				}
+				else{
+					items[i].quantity = xtra;
+					return;
+				}
+			}
+		}
+	}
+	
 	public Item getSelectedItem() {
-		return items[selected];
+		
+		return items[selected] == null ? null : items[selected].item;
 	}
 	
 	public void save(){
@@ -135,7 +182,7 @@ public class Player extends Entity{
 
 			for(int i = 0; i < MAX_ITEMS; i ++){
 				if (items[i] == null) continue;	
-				out.write("\titem=" + items[i].getID());
+				out.write("\titem=" + items[i].item.getID());
 				out.newLine();
 			}		
 			out.write("}");
@@ -171,7 +218,7 @@ public class Player extends Entity{
 	}
 
 	public void use() {
-		if (items[selected] != null) items[selected].use(this, level);
+		if (items[selected] != null) items[selected].item.use(this, level);
 		else System.out.println("Didn't your mother teach you not to use nothing!?");
 
 	}
@@ -275,14 +322,14 @@ public class Player extends Entity{
 			return;
 		
 		level.removeItem(x, y);
-		items[selected] = item;
+		addItem(item, selected);
 	}
 	
 	public void drop() {
-		Item item = items[selected];
+		Item item = items[selected].item;
 		if(item == null)
 			return;
-		items[selected] = null;
+		addItem(null, selected);
 		level.addItem(item, x, y);
 	}
 	
@@ -291,12 +338,12 @@ public class Player extends Entity{
 		if (itemNew == null)
 			return;
 		level.removeItem(x, y);
-		Item itemOld = items[selected];
+		Item itemOld = items[selected].item;
 		if(itemOld == null)
 			return;
-		items[selected] = null;
+		addItem(null, selected);
 		level.addItem(itemOld, x, y);
-		items[selected] = itemNew;
+		addItem(itemNew, selected);
 	}
 
 	public void savePrompt() {
@@ -313,15 +360,23 @@ public class Player extends Entity{
 		for (int i = 0; i < 10; i++) {
 			screen.fillRect(x + i * 40 + 2, y + 2, 36, 36, 0x333333);
 			if (items[i] != null) {
-				screen.drawTexture(x + i * 40 + 2, y + 2, items[i].getIcon());
+				screen.drawTexture(x + i * 40 + 2, y + 2, items[i].item.getIcon());
 			}
 			
 		}	
+		
+		for (int j = 0; j < MAX_ITEMS; j++) {
+			if (items[j].quantity > 1) {
+				screen.drawString(items[j].item + "", x + j * 40 + 28, y + 38, itemQtyFont, Color.WHITE);
+			}
+		}
+		
 		x = x + selected * 40;
 		
 		screen.drawRect(x + 0, y + 0, 40, 40, 0xffffff);
 		screen.drawRect(x + 1, y + 1, 38, 38, 0x0);
 		screen.drawRect(x + 2, y + 2, 36, 36, 0xffffff);
+		
 		
 	}
 	
@@ -356,8 +411,8 @@ public class Player extends Entity{
 		for (int i = 0; i < items.length; i++){
 			if (items[i] != null){
 				result += "  ";
-				int qty = qts[items[i].id];
-				result += qty + " " + items[i].name;
+				int qty = items[i].quantity;
+				result += qty + " " + items[i].item.name;
 				if (qty > 1) result += "s";
 				result += "\n";
 			}
