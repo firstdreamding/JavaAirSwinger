@@ -32,11 +32,13 @@ public class Level {
 	public class LevelItem {
 		Item item;
 		int x, y;
+		int quantity;
 		
-		LevelItem(Item item, int x, int y) {
+		LevelItem(Item item, int x, int y, int quantity) {
 			this.item = item;
 			this.x = x;
 			this.y = y;
+			this.quantity = quantity;
 		}
 	}
 	
@@ -55,10 +57,6 @@ public class Level {
 
 	protected void generate(){
 		
-	}
-	
-	protected void placeItem(Item item, int x, int y) {
-		items.add(new LevelItem(item, x, y));
 	}
 
 	public char getTile(int x, int y){
@@ -246,14 +244,23 @@ public class Level {
 
 	}
 
+	public void addItem(Item item, int x, int y, int quantity) {
+		items.add(new LevelItem(item, x, y, quantity));		
+	}
+	
 	public void addItem(Item item, int x, int y) {
-		items.add(new LevelItem(item, x, y));		
+		items.add(new LevelItem(item, x, y, 1));		
 	}
 
 	public Item getItem(int x, int y) {
+		LevelItem item = getLevelItem(x,y);
+		return item != null ? item.item : null;
+	}
+	
+	public LevelItem getLevelItem(int x, int y) {
 		for (LevelItem item : items) {
 			if (item.x == x && item.y == y)
-				return item.item;
+				return item;
 		}
 		return null;
 	}

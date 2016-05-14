@@ -74,18 +74,8 @@ public class Player extends Entity{
 		health = 10;
 		addItem(Item.sword, 0);
 		addItem(Item.bow, 1);
-		addItem(Item.arrow, 2);
-		addItem(Item.arrow, 2);
-		addItem(Item.arrow, 2);
-		addItem(Item.arrow, 2);
-		addItem(Item.arrow, 2);
-		addItem(Item.arrow, 2);
-		addItem(Item.arrow, 2);
-		addItem(Item.arrow, 2);
-		addItem(Item.arrow, 2);
-		addItem(Item.arrow, 2);
-		addItem(Item.arrow, 2);
-		addItem(Item.arrow, 2);
+		addItem(Item.arrow, 2, 97);
+		addItem(Item.arrow, 3, 98);
 		
 	}
 
@@ -101,18 +91,123 @@ public class Player extends Entity{
 	}
 	
 	public void addItem(Item item, int slot) {
+		addItem(item, slot, 1); 
+	}
+	
+	public void addItem(Item item, int slot, int quantity) {
 		if (item == null) {
 			items[slot] = null;
 			return;
 		}
 		
-		if (items[slot] == null || items[slot].item != item) {
+		else if (items[slot] == null && item.isStackable()) {
+			if (quantity > item.getStackLimit()) {
+				int extra = quantity - item.getStackLimit();
+				items[slot] = new PlayerItem();
+				items[slot].item = item;
+				items[slot].quantity = 99;	
+				addItem(item, slot, extra);
+			}
+			else {
+				items[slot] = new PlayerItem();
+				items[slot].item = item;
+				items[slot].quantity = quantity;
+			}
+		}
+		
+		else if (!item.isStackable()) {
+			if(items[slot] == null) {
+				items[slot] = new PlayerItem();
+				items[slot].item = item;
+				items[slot].quantity = 1;
+				quantity--;
+				if(quantity == 0) return;
+			}
+				slot = findEmptySlot();
+				if (slot == -1) { System.out.println("Full Inventory"); return;}
+				items[slot] = new PlayerItem();
+				items[slot].item = item;
+				items[slot].quantity = 1;
+				quantity--;
+				if(quantity == 0) return;
+				int extra = quantity - 1;
+				addItem(item, slot, extra);
+			}
+		else if (items[slot] != null && item.isStackable()) {
+			slot = findStackSlot(item);
+			if (slot == -1) {
+				slot = findEmptySlot();
+				if (slot == -1) { System.out.println("Full Inventory"); return;}
+				addItem(item, slot, quantity);
+			}
+			if (quantity + items[slot].quantity > item.getStackLimit()){
+			int extra = quantity + items[slot].quantity - item.getStackLimit();
+			items[slot].quantity = 99;
+			addItem(item, slot + 1, extra);
+			}else {
+				items[slot].quantity += quantity;
+			}
+			}
+		}
+	
+	
+/*	
+	public void addItem(Item item, int slot, int quantity) {
+		if (item == null) {
+			items[slot] = null;
+			return;
+		}
+		
+		if (items[slot] != null && !item.isStackable()){
+			for(int i = 0; i < MAX_ITEMS; i++){
+				if(items[i] == null){
+					slot = i;
+					break;
+				}
+			}
+		}
+		
+		if (items[slot].item != item) {
+			slot = findEmptySlot();
+		}
+		
+		if (items[slot] == null) {
 			items[slot] = new PlayerItem();
 		}
+		
 		items[slot].item = item;
-		items[slot].quantity++;
-	}
+		int limit = items[slot].item.getStackLimit();
+		for (int i = 0; i < quantity; i++){
+			if (items[slot].quantity < limit)
+				items[slot].quantity++;
+			else {
+				boolean found = false;
+				if (!item.isStackable()) {
+					slot = findEmptySlot();
+					if (slot == -1)
+						return;
+					items[slot] = new PlayerItem();
+					items[slot].item = item;
+					items[slot].quantity++;
+				}
+				for (int j = 0; j < MAX_ITEMS; j++) {
+					if (slot == j)
+						continue;
+					if (items[j] != null && items[j].item.getID() == item.getID() && items[j].quantity < items[j].item.getStackLimit())
+						slot = j;
+						found = true;
+						break;
+				}
+				if (!found) {
+					for (int j = 0; j < MAX_ITEMS; j++) {
+						
+					}
+				}
+			}
 	
+		}
+	}
+	*/
 	public void removeItem(Item item, int qty) {
 		for(int i = 0; i < MAX_ITEMS; i++){
 			if (items[i] == null)
@@ -130,6 +225,22 @@ public class Player extends Entity{
 				}
 			}
 		}
+	}
+	
+	private int findEmptySlot() {
+		for (int i = 0; i < MAX_ITEMS; i++) {
+			if (items[i] == null)
+				return i;
+		}
+		return -1;
+	}
+	
+	private int findStackSlot(Item item) {
+		for (int i = 0; i < MAX_ITEMS; i++) {
+			if (items[i].item == item && items[i].quantity < item.getStackLimit())
+				return i;
+		}
+		return -1;
 	}
 	
 	public Item getSelectedItem() {
@@ -317,12 +428,12 @@ public class Player extends Entity{
 	}
 	
 	public void take() {
-		Item item = level.getItem(x, y);
+		Level.LevelItem item = level.getLevelItem(x, y);
 		if (item == null)
 			return;
 		
 		level.removeItem(x, y);
-		addItem(item, selected);
+		addItem(item.item, selected, item.quantity);
 	}
 	
 	public void drop() {
@@ -366,8 +477,11 @@ public class Player extends Entity{
 		}	
 		
 		for (int j = 0; j < MAX_ITEMS; j++) {
+			if (items[j] == null)
+				continue;
 			if (items[j].quantity > 1) {
-				screen.drawString(items[j].item + "", x + j * 40 + 28, y + 38, itemQtyFont, Color.WHITE);
+				int offset = items[j].quantity < 10 ? 28 : 18;
+				screen.drawString(items[j].quantity + "", x + j * 40 + offset, y + 38, itemQtyFont, Color.WHITE);
 			}
 		}
 		

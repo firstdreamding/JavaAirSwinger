@@ -26,7 +26,7 @@ public class LevelOne extends Level {
 			else if (c >= '0' && c <= '9'){
 				int id = Integer.parseInt("" + c);
 				Item item = Item.getByID(id);
-				placeItem(item, x, y);
+				addItem(item, x, y, 4);
 			}
 				
 		}

@@ -24,6 +24,8 @@ public class Bow extends Weapon {
 		boolean found = false;
 		Arrow arrow = null;
 		for (int i = 0; i < player.items.length; i++) {
+			if (player.items[i] == null)
+				continue;
 			if (player.items[i].item instanceof Arrow) {
 				found = true;
 				arrow = (Arrow) player.items[i].item;

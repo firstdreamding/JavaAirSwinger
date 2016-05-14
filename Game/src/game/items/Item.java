@@ -13,6 +13,8 @@ public class Item{
 
 	public int id, weight;
 	public String name, description;
+	protected boolean stackable = true;
+	protected int stackLimit = 99;
 	
 	protected Texture icon;
 	
@@ -55,6 +57,14 @@ public class Item{
 
 	public int getID(){
 		return id;
+	}
+	
+	public boolean isStackable() {
+		return stackable;
+	}
+	
+	public int getStackLimit() {
+		return stackable ? stackLimit : 1;
 	}
 
 }
