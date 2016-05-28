@@ -30,6 +30,7 @@ public class Bow extends Weapon {
 				found = true;
 				arrow = (Arrow) player.items[i].item;
 				player.removeItem(player.items[i].item, 1);
+				break;
 			}
 		}
 		if (found) {

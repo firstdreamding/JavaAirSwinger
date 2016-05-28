@@ -103,14 +103,19 @@ public class Level {
 			else if (c == '#'){
 				type = Tile.TYPE_WALL;
 			}
+			else if (c == 'L') {
+				type = Tile.TYPE_LAVA;
+			}
 			int xi = i % getWidth();
 			int yi = i / getWidth();
 			
 			Texture texture = Tile.getTexture(type);
 			if (texture == null)
-				screen.fillRect(xi * Tile.SIZE, yi * Tile.SIZE, Tile.SIZE, Tile.SIZE, Tile.getColor(type)); 	
-			else
-				screen.drawTexture(xi * Tile.SIZE, yi * Tile.SIZE,Tile.getTexture(Tile.TYPE_WALL));
+				screen.fillRect(xi * Tile.SIZE, yi * Tile.SIZE, Tile.SIZE, Tile.SIZE, Tile.getColor(type)); 
+			else if (type == Tile.TYPE_LAVA) {
+				screen.drawTexture(xi * Tile.SIZE, yi * Tile.SIZE,Tile.getTexture(Tile.TYPE_LAVA));
+			}
+			else screen.drawTexture(xi * Tile.SIZE, yi * Tile.SIZE,Tile.getTexture(Tile.TYPE_WALL));
 		}
 		//Render The items
 		boolean renderedItemPanel = false;
@@ -175,6 +180,8 @@ public class Level {
 					return new LevelOne(player);
 				case 2:
 					return new LevelTwo(player);
+				case 3:
+					return new LevelThree(player);
 			}
 			return null;
 	}

@@ -45,8 +45,11 @@ public class Entity {
 			System.out.println("You did it!");
 		    Main.getInstance().nextLevel();
 		}
+		char fromTile = level.getTile(x,y);
 		x += xa;
 		y += ya;
+		char toTile = level.getTile(x,y);
+		onTileEntered(fromTile, toTile, x, y);
 	}
 
 	protected String collision(int xa, int ya) {
@@ -62,6 +65,10 @@ public class Entity {
 		this.y = y;
 	}
 
+	protected void onTileEntered(char fromTile, char toTile, int x, int y) {
+		
+	}
+	
 	public void update() {
 
 	}

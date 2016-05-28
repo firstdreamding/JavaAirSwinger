@@ -10,7 +10,8 @@ public class Tile {
 	public static final int TYPE_FLOOR = 0;
 	public static final int TYPE_DIRT  = 1;
 	public static final int TYPE_WALL = 2;
-	public static final int TYPE_GRASS= 3;
+	public static final int TYPE_GRASS = 3;
+	public static final int TYPE_LAVA = 4;
 	private BufferedImage image;
 	
 	private static Map<Integer, Texture> textures = new HashMap<Integer, Texture> ();
@@ -48,6 +49,7 @@ public class Tile {
 	
 	public static void loadTextures(){
 		textures.put(TYPE_WALL, new Texture("res/Wall.png"));
+		textures.put(TYPE_LAVA, new Texture("res/Lava.png"));
 	}
 	public static int getColor(int type) {
 		if (type == TYPE_FLOOR)

@@ -1,11 +1,11 @@
 package game;
 
-import java.awt.Color;
-import java.awt.Font;
-
 import graphics.Screen;
 import graphics.SpriteSheet;
 import graphics.Texture;
+
+import java.awt.Color;
+import java.awt.Font;
 public class Dragon extends Entity {
 	
 	private static SpriteSheet dragonTextures = new SpriteSheet(new Texture("res/Dragon.png"),50, 50);
