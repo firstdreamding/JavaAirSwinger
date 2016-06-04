@@ -2,7 +2,6 @@ package game;
 
 import graphics.Texture;
 
-import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
 public class Tile {
@@ -12,7 +11,8 @@ public class Tile {
 	public static final int TYPE_WALL = 2;
 	public static final int TYPE_GRASS = 3;
 	public static final int TYPE_LAVA = 4;
-	private BufferedImage image;
+	public static final int TYPE_WATER = 5;
+
 	
 	private static Map<Integer, Texture> textures = new HashMap<Integer, Texture> ();
 	
@@ -50,6 +50,8 @@ public class Tile {
 	public static void loadTextures(){
 		textures.put(TYPE_WALL, new Texture("res/Wall.png"));
 		textures.put(TYPE_LAVA, new Texture("res/Lava.png"));
+		textures.put(TYPE_FLOOR, new Texture("res/Ground.png"));
+		textures.put(TYPE_WATER, new Texture("res/Water.png"));
 	}
 	public static int getColor(int type) {
 		if (type == TYPE_FLOOR)

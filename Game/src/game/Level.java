@@ -23,7 +23,7 @@ public class Level {
 	protected Player player;
 	protected int width, height;
     private BufferedImage image;
-    private static boolean infoOn = true;
+    public static boolean infoOn = true;
     int turns;
     
     
@@ -106,16 +106,31 @@ public class Level {
 			else if (c == 'L') {
 				type = Tile.TYPE_LAVA;
 			}
+			else if (c == 'W') {
+				type = Tile.TYPE_WATER;
+			}
 			int xi = i % getWidth();
 			int yi = i / getWidth();
 			
 			Texture texture = Tile.getTexture(type);
 			if (texture == null)
 				screen.fillRect(xi * Tile.SIZE, yi * Tile.SIZE, Tile.SIZE, Tile.SIZE, Tile.getColor(type)); 
-			else if (type == Tile.TYPE_LAVA) {
-				screen.drawTexture(xi * Tile.SIZE, yi * Tile.SIZE,Tile.getTexture(Tile.TYPE_LAVA));
+			else {
+				switch(type){
+					case Tile.TYPE_LAVA:
+						screen.drawTexture(xi * Tile.SIZE, yi * Tile.SIZE,Tile.getTexture(Tile.TYPE_LAVA));
+						break;
+					case Tile.TYPE_FLOOR:
+						screen.drawTexture(xi * Tile.SIZE, yi * Tile.SIZE,Tile.getTexture(Tile.TYPE_FLOOR));
+						break;
+					case Tile.TYPE_WATER:
+						screen.drawTexture(xi * Tile.SIZE, yi * Tile.SIZE,Tile.getTexture(Tile.TYPE_WATER));
+						break;
+					case Tile.TYPE_WALL:
+						screen.drawTexture(xi * Tile.SIZE, yi * Tile.SIZE,Tile.getTexture(Tile.TYPE_WALL));
+						break;
+				}
 			}
-			else screen.drawTexture(xi * Tile.SIZE, yi * Tile.SIZE,Tile.getTexture(Tile.TYPE_WALL));
 		}
 		//Render The items
 		boolean renderedItemPanel = false;

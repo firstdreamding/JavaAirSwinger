@@ -56,6 +56,7 @@ public class Main{
       			player.addItem(Item.getByID(Integer.parseInt(item)));
       		}
 		}
+		sizeChange = new int[] {level.getWidth() * Tile.SIZE, level.getHeight() * Tile.SIZE};
 		initGraphics();
 		running = true;
 	}
@@ -67,9 +68,13 @@ public class Main{
 		TextureManager.add(new Texture("BowIcon", "res/hud/BowWooden.png"));
 		TextureManager.add(new Texture("SwordIcon", "res/hud/Sword.png"));
 		
+		TextureManager.add(new Texture("HPotIcon", "res/hud/Health.png"));
+		
 		TextureManager.add(new Texture("HeartFullIcon", "res/hud/heart.png"));
 		TextureManager.add(new Texture("HeartHalfIcon", "res/hud/hearthalf.png"));
 		TextureManager.add(new Texture("HeartEmptyIcon", "res/hud/heartempty.png"));
+		
+		TextureManager.add(new Texture("Fire", "res/hud/Fire.png"));
 	}
 	private void initGraphics() {
 		Tile.loadTextures();

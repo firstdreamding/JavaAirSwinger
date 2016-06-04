@@ -27,6 +27,8 @@ public class Player extends Entity {
 	int index = 0;
 	private Font itemQtyFont = new Font("Helvetica", Font.PLAIN, 18);
 	char didyouslam;
+	boolean isOnFire = false;
+	int fireOn = 5;
 
 	private SpriteSheet playerTextures;
 	private int tx, ty;
@@ -184,8 +186,7 @@ public class Player extends Entity {
 
 	private int findStackSlot(Item item) {
 		for (int i = 0; i < MAX_ITEMS; i++) {
-			if (items[i].item == item
-					&& items[i].quantity < item.getStackLimit())
+			if (items[i].item == item && items[i].quantity < item.getStackLimit())
 				return i;
 		}
 		return -1;
@@ -382,16 +383,9 @@ public class Player extends Entity {
 		commandHistory.put("move", commands[1]);
 		if (level.getTile(x + xa, y + ya) == '#') {
 			System.out.print("You slammed into the wall. You can't move there!\n");
-			if (level.getTile(x, y) == 'L'){
-				damage(1);
-			}
 		}
 		if (level.getTile(x + xa, y + ya) == '|')
 			System.out.print("Its a sign, but it is too scratched up to be read.\n");
-		if (level.getTile(x + xa, y + ya) == 'L'){
-			System.out.println("Ouch! Lava! I should not stay here.");
-			damage(1);
-		}
 		move(xa, ya);
 
 	}
@@ -432,6 +426,30 @@ public class Player extends Entity {
 	}
 	
 	protected void onTileEntered(char fromTile, char toTile, int x, int y) {
+		switch (toTile){
+		case 'L':
+			System.out.println("I'm on fire! Better get to water!");
+			isOnFire = true;
+			break;
+		case 'F':
+			System.out.println("You did it!");
+		    Main.getInstance().nextLevel();
+		    break;
+		case 'W':
+			System.out.println("Extinguished!");
+			isOnFire = false;
+		}
+	}
+	
+	public void update() {
+		if (isOnFire) {
+			damage(1);
+			fireOn--;
+			if (fireOn == 0) {
+				isOnFire = false;
+			}
+		} 
+		else if(!(fireOn == 5)) fireOn = 5;
 	}
 
 	private void renderInventory(Screen screen) {
@@ -456,8 +474,7 @@ public class Player extends Entity {
 				continue;
 			if (items[j].quantity > 1) {
 				int offset = items[j].quantity < 10 ? 28 : 18;
-				screen.drawString(items[j].quantity + "", x + j * 40 + offset,
-						y + 38, itemQtyFont, Color.WHITE);
+				screen.drawString(items[j].quantity + "", x + j * 40 + offset,y + 38, itemQtyFont, Color.WHITE);
 			}
 		}
 
@@ -487,12 +504,20 @@ public class Player extends Entity {
 			screen.drawTexture(x + i * 38, y, heartTextures[tex]);
 		}
 	}
+	
+	private void renderFire (Screen screen) {
+		if (isOnFire) {
+			screen.drawTexture(x * Tile.SIZE + 14, y * Tile.SIZE + 20, TextureManager.get("Fire"));
+			if (Level.infoOn)
+				screen.drawString("FIRE", x * Tile.SIZE + 5, y * Tile.SIZE + 65, itemQtyFont, Color.RED);
+		}
+	}
 
 	public void render(Screen screen) {
-		screen.drawTexture(x * Tile.SIZE, y * Tile.SIZE,
-				playerTextures.getTexture(tx, ty));
+		screen.drawTexture(x * Tile.SIZE, y * Tile.SIZE, playerTextures.getTexture(tx, ty));
 		screen.drawString(name, x * Tile.SIZE - 25, y * Tile.SIZE);
 		renderHUD(screen);
+		renderFire(screen);
 		// super.render(screen);
 	}
 

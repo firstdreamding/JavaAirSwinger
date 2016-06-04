@@ -23,11 +23,23 @@ public class Entity {
 	public int getY(){
 		return y;
 	}
+	
+	public int getHealth(){
+		return health;
+	}
 
 	public void damage(int amount) {
 		health -= amount;
 		if (health <= 0)
 			remove();
+	}
+	
+	public void recover(int amount) {
+		health += amount;
+	}
+	
+	public void setHealth(int amount) {
+		health = amount;
 	}
 	
 	public void remove() {
@@ -40,10 +52,6 @@ public class Entity {
 	protected void move(int xa, int ya) {
 		if (collision(xa, ya) == "wall") {
 			return;
-		}
-		if (this instanceof Player && collision(xa, ya) == "finish"){
-			System.out.println("You did it!");
-		    Main.getInstance().nextLevel();
 		}
 		char fromTile = level.getTile(x,y);
 		x += xa;

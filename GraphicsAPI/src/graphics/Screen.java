@@ -80,13 +80,13 @@ public class Screen {
 		}
 
 		for (int xx = x; xx < x + width; xx++) {
-			if (xx < 0 || xx >= this.width)
+			if (xx < 0 || xx >= this.width || y < 0 || y >= this.height)
 				continue;
 				pixels[xx + y * this.width] = color;
 			if ((y + height) < this.height)
 				pixels[xx + (y + height) * this.width] = color;
 		}
-		if ((y + height) < this.height && ((x + width) < this.width))
+		if ((x + width) > 0 && (y + height) > 0 && (y + height) < this.height && ((x + width) < this.width))
 			pixels[x + width + (y + height) * this.width] = color;
 	}
 

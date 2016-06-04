@@ -26,6 +26,7 @@ public class Item{
 	public static Item arrow = new Arrow(2);
 	public static Item knife = new Knife(3);
 	public static Item battleaxe = new Battleaxe(4);
+	public static Item health = new Health(5);
 
 
 	public Item(int id, String name, String description){
