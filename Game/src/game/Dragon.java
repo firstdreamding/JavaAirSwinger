@@ -24,6 +24,16 @@ public class Dragon extends Entity {
 		health = 10;
 	}
 	
+	public void tick() {
+		if(showDamage()){	
+			modY -= 0.6f;
+			opacity -= 0.75f / 60f;
+			colors += 0.3f / 60f;
+			modX += random.nextInt(3) - 1;
+		}
+		damageTimer--;
+	}
+	
 	public void update(){
 		int xa = random.nextInt(3) - 1;
 		int ya = random.nextInt(3) - 1;
@@ -66,14 +76,7 @@ public class Dragon extends Entity {
 		
 		if(showDamage()){
 			screen.drawString("-" + damage, (int)(x * Tile.SIZE + modX), (int)(y * Tile.SIZE + modY), new Font("Consolas", Font.BOLD, 18), new Color(red, colors, colors, opacity));
-			
-			
-			modY -= 0.1f;
-			opacity -= 0.75f / 360f;
-			colors += 0.3f / 360f;
-			modX += random.nextInt(3) - 1;
 		}
-		damageTimer--;
 		
 	}
 	
@@ -87,7 +90,7 @@ public class Dragon extends Entity {
 		damage = amount;
 		opacity = 1.0f;
 		red = 0.9f;
-		damageTimer = 360;
+		damageTimer = 60;
 		modY = 0;
 		colors = 0.1f;
 		

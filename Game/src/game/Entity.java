@@ -81,6 +81,10 @@ public class Entity {
 
 	}
 	
+	public void tick() {
+		
+	}
+	
 	public void render(Screen screen) {
 		screen.fillRect(x * Tile.SIZE - 5, y * Tile.SIZE - 10, (int)((Tile.SIZE + 10) * health / 10.0), 5, 0xaa);
 	}

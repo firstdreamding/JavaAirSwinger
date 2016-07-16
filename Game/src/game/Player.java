@@ -175,6 +175,23 @@ public class Player extends Entity {
 			}
 		}
 	}
+	
+	public boolean removeItem(Class<? extends Item> cls, int qty) {
+		for (int i = 0; i < MAX_ITEMS; i++) {
+			if (items[i] == null)
+				continue;
+			if (cls.isInstance(items[i].item)) {
+				int remainder = items[i].quantity - qty;
+				if (remainder <= 0) {
+					items[i] = null;
+				} else {
+					items[i].quantity = remainder;
+				}
+				return true;
+			}
+		}
+		return false;
+	}
 
 	private int findEmptySlot() {
 		for (int i = 0; i < MAX_ITEMS; i++) {
@@ -186,7 +203,8 @@ public class Player extends Entity {
 
 	private int findStackSlot(Item item) {
 		for (int i = 0; i < MAX_ITEMS; i++) {
-			if (items[i].item == item && items[i].quantity < item.getStackLimit())
+			if (items[i] != null && items[i].item == item
+					&& items[i].quantity < item.getStackLimit())
 				return i;
 		}
 		return -1;
@@ -382,7 +400,7 @@ public class Player extends Entity {
 		}
 		commandHistory.put("move", commands[1]);
 		if (level.getTile(x + xa, y + ya) == '#') {
-			System.out.print("You slammed into the wall. You can't move there!\n");
+			level.message("You slammed into the wall. You can't move there!");
 		}
 		if (level.getTile(x + xa, y + ya) == '|')
 			System.out.print("Its a sign, but it is too scratched up to be read.\n");
@@ -424,23 +442,23 @@ public class Player extends Entity {
 		save(input.getLine("Enter save name :"));
 		System.out.println("Done.");
 	}
-	
+
 	protected void onTileEntered(char fromTile, char toTile, int x, int y) {
-		switch (toTile){
+		switch (toTile) {
 		case 'L':
 			System.out.println("I'm on fire! Better get to water!");
 			isOnFire = true;
 			break;
 		case 'F':
 			System.out.println("You did it!");
-		    Main.getInstance().nextLevel();
-		    break;
+			Main.getInstance().nextLevel();
+			break;
 		case 'W':
 			System.out.println("Extinguished!");
 			isOnFire = false;
 		}
 	}
-	
+
 	public void update() {
 		if (isOnFire) {
 			damage(1);
@@ -448,14 +466,14 @@ public class Player extends Entity {
 			if (fireOn == 0) {
 				isOnFire = false;
 			}
-		} 
-		else if(!(fireOn == 5)) fireOn = 5;
+		} else if (!(fireOn == 5))
+			fireOn = 5;
 	}
 
 	private void renderInventory(Screen screen) {
 		int width = level.getWidth() * Tile.SIZE;
 		int height = level.getHeight() * Tile.SIZE;
-		int x = width/2 - (40 * 10)/2;
+		int x = width / 2 - (40 * 10) / 2;
 		int y = height - 45;
 
 		screen.fillRect(x, y, 400, 40, 0xbababa);
@@ -474,7 +492,8 @@ public class Player extends Entity {
 				continue;
 			if (items[j].quantity > 1) {
 				int offset = items[j].quantity < 10 ? 28 : 18;
-				screen.drawString(items[j].quantity + "", x + j * 40 + offset,y + 38, itemQtyFont, Color.WHITE);
+				screen.drawString(items[j].quantity + "", x + j * 40 + offset,
+						y + 38, itemQtyFont, Color.WHITE);
 			}
 		}
 
@@ -487,11 +506,11 @@ public class Player extends Entity {
 	}
 
 	private void renderHUD(Screen screen) {
-		
+
 		renderInventory(screen);
 		int h = health / 2;
 		boolean half = health % 2 != 0;
-		
+
 		int width = level.getWidth() * Tile.SIZE;
 		int x = width - 5 * 38 - 5;
 		int y = 5;
@@ -504,17 +523,20 @@ public class Player extends Entity {
 			screen.drawTexture(x + i * 38, y, heartTextures[tex]);
 		}
 	}
-	
-	private void renderFire (Screen screen) {
+
+	private void renderFire(Screen screen) {
 		if (isOnFire) {
-			screen.drawTexture(x * Tile.SIZE + 14, y * Tile.SIZE + 20, TextureManager.get("Fire"));
+			screen.drawTexture(x * Tile.SIZE + 14, y * Tile.SIZE + 20,
+					TextureManager.get("Fire"));
 			if (Level.infoOn)
-				screen.drawString("FIRE", x * Tile.SIZE + 5, y * Tile.SIZE + 65, itemQtyFont, Color.RED);
+				screen.drawString("FIRE", x * Tile.SIZE + 5,
+						y * Tile.SIZE + 65, itemQtyFont, Color.RED);
 		}
 	}
 
 	public void render(Screen screen) {
-		screen.drawTexture(x * Tile.SIZE, y * Tile.SIZE, playerTextures.getTexture(tx, ty));
+		screen.drawTexture(x * Tile.SIZE, y * Tile.SIZE,
+				playerTextures.getTexture(tx, ty));
 		screen.drawString(name, x * Tile.SIZE - 25, y * Tile.SIZE);
 		renderHUD(screen);
 		renderFire(screen);
