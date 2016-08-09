@@ -15,7 +15,7 @@ public class Main {
 	Player player;
 	Level level;
 	Input input;
-	Storyline Storyline;
+	StoryLine Storyline;
 	private Window window;
 	private Screen screen;
 	private List<Tile> tiles = new ArrayList<Tile>();
@@ -29,7 +29,7 @@ public class Main {
 		boolean bypass = true;
 		loadResources();
 		input = new Input();
-		Storyline = new Storyline("res/Story.txt");
+		Storyline = new StoryLine();
 		if (!bypass) {
 			String scOn = input.getLine(
 					"Do you wish to open a save file?(Y/N): ").toLowerCase();
@@ -38,6 +38,7 @@ public class Main {
 				levelIndex = input.getInt("Choose a level (1-10)");
 				input.getLine();
 				this.level = Level.create(levelIndex, player);
+				Storyline.StoryA();
 			} else if (scOn.startsWith("y")) {
 				String scName = input
 						.getLine("What is the name of this save file?: ");
@@ -63,8 +64,10 @@ public class Main {
 			player = new Player("Geoffrey", input);
 			levelIndex = 1;
 			this.level = Level.create(levelIndex, player);
+			Storyline.StoryA();
+			level.story(Storyline.La1);
+
 		}
-		level.story(Storyline);
 		sizeChange = new int[] { level.getWidth() * Tile.SIZE,
 				level.getHeight() * Tile.SIZE };
 		initGraphics();

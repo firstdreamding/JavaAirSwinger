@@ -1,29 +1,13 @@
 package game;
 
 import game.items.Item;
-import game.items.Weapon;
-import graphics.Screen;
-import graphics.Texture;
-
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
-import java.util.Scanner;
-
-import javax.imageio.ImageIO;
 
 public class Level {
 
 	protected List<Entity> entities = new ArrayList<Entity>();
 	protected String level;
 	protected Player player;
+	private StoryRender story;
 	protected int width, height;
 	private BufferedImage image;
 	public static boolean infoOn = true;
@@ -38,8 +22,6 @@ public class Level {
 
 	private Font msgFont = new Font("Consolas", Font.BOLD, 14);
 	private Queue<String> messageQueue = new LinkedList<String>();
-	
-	private StoryRender story;
 
 
 	public class LevelItem {
@@ -179,7 +161,10 @@ public class Level {
 		}
 
 		renderMessages(screen);
+
+		// Render The story.
 		story.render(screen);
+
 	}
 
 	private void renderItemPanel(Screen screen, Item item, int x, int y) {
@@ -232,13 +217,14 @@ public class Level {
 		screen.drawString(message, x1, y2, msgFont, Color.WHITE);
 
 	}
+	
 
 	public void message(String message) {
 		messageQueue.add(message);
 	}
 	
-	public void story(Storyline storyline) {
-		story.add(storyline.getDialogue());
+	public void story(String message) {
+		story.add(message);
 	}
 
 	public void ImagePanel() {

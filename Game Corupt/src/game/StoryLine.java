@@ -19,7 +19,7 @@ public class StoryLine {
 	}
 	
 	//Here are all the story lines
-	String La1 = "\"I see you have arived sir\" (picture of a Scientist shows up) ";
+	String La1 = "\"I see you have arrived sir\" (picture of a Scientist shows up) ";
 	String La2 = "\"Please proceed to our observatory. We have a T-Rex that you need to checkup on.\"";
 	String La3 = "\"Our equipment might be everywhere, because of the T-Rex's anger. You must calm him!\" \nT-Rex: ROAR!!!!";
 	
